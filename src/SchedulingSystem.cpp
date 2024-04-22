@@ -158,6 +158,69 @@ Process* SchedulingSystem::getProcessTable() const
   return process;
 }
 
+/** @brief get system time
+ *
+ * Simply returns the current simulation system time.
+ *
+ * @returns Int returns current simulation system time.
+ */
+int SchedulingSystem::getSystemTime()
+{
+  return systemTime;
+}
+
+/** @brief get number of processes
+ *
+ * This method returns the total number of processes that will be
+ * in the simulation.
+ *
+ * @returns Int total number of processes that will be in the simulation.
+ */
+int SchedulingSystem::getNumProcesses()
+{
+  return numProcesses;
+}
+
+/** @brief is cpu idle
+ *
+ * This method checks if the cpu is IDLE and returns true if it is and false
+ * if it isn't.
+ *
+ * @returns bool returns true if cpu is IDLE and false if it isn't.
+ */
+bool SchedulingSystem::isCpuIdle()
+{
+  if (cpu == IDLE)
+  {
+    return true;
+  }
+  else
+  {
+    return false;
+  }
+}
+
+/** @brief get running process name
+ *
+ * This method check is cpu is Idle and returns a string "IDLE" if that is the case
+ * If the cpu is not idle this method will return the process name of the current cpu
+ * process id.
+ *
+ * @returns String returns "IDLE" if cpu is idle and the process name of the current cpu
+ * process id if it isn't.
+ */
+string SchedulingSystem::getRunningProcessName()
+{
+  if (isCpuIdle() == true)
+  {
+    return "IDLE";
+  }
+  else
+  {
+    return process[cpu].name;
+  }
+}
+
 /** @brief final results table
  *
  * Calculate the final results and format as a table.
