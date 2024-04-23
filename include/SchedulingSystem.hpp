@@ -181,6 +181,7 @@ public:
   void checkProcessPreemption();
   void updateProcessStatistics();
   void runSimulation(bool verbose = false);
+  bool allProcessesDone() const;
 };
 
 #endif // SCHEDULING_SYSTEM_HPP
