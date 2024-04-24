@@ -182,6 +182,7 @@ public:
   void updateProcessStatistics();
   void runSimulation(bool verbose = false);
   bool allProcessesDone() const;
+  void dispatchCpuIfIdle();
 };
 
 #endif // SCHEDULING_SYSTEM_HPP

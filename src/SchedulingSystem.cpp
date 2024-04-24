@@ -147,7 +147,7 @@ Pid SchedulingSystem::getRunningPid() const
 
 /** @brief get process table
  *
- * Get a handle/pointer to the simulation process table. This
+ * Gets a handle/pointer to the simulation process table. This
  * is needed information by some policies, so they can look up
  * service times and other information about the processes.
  *
@@ -239,6 +239,26 @@ bool SchedulingSystem::allProcessesDone() const
     }
   }
   return true;
+}
+
+/** @brief are all processes Done
+ *
+ * This method goes through each process in the process table and if a process
+ * is not done it returns false. If all processes checked are done return true
+ *
+ * @return Bool if a processis not done it returns false. If all processes
+ *  checked were done return true
+ */
+void SchedulingSystem::dispatchCpuIfIdle()
+{
+  if (isCpuIdle() == true)
+  {
+    cpu = policy->dispatch();
+    if (process[cpu].startTime == NOT_STARTED)
+    {
+      process[cpu].startTime = getSystemTime();
+    }
+  }
 }
 
 /** @brief final results table
