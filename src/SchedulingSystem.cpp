@@ -147,7 +147,7 @@ Pid SchedulingSystem::getRunningPid() const
 
 /** @brief get process table
  *
- * Get a handle/pointer to the simulation process table. This
+ * Gets a handle/pointer to the simulation process table. This
  * is needed information by some policies, so they can look up
  * service times and other information about the processes.
  *
@@ -156,6 +156,135 @@ Pid SchedulingSystem::getRunningPid() const
 Process* SchedulingSystem::getProcessTable() const
 {
   return process;
+}
+
+/** @brief get system time
+ *
+ * Simply returns the current simulation system time.
+ *
+ * @returns Int returns current simulation system time.
+ */
+int SchedulingSystem::getSystemTime()
+{
+  return systemTime;
+}
+
+/** @brief get number of processes
+ *
+ * This method returns the total number of processes that will be
+ * in the simulation.
+ *
+ * @returns Int total number of processes that will be in the simulation.
+ */
+int SchedulingSystem::getNumProcesses()
+{
+  return numProcesses;
+}
+
+/** @brief is cpu idle
+ *
+ * This method checks if the cpu is IDLE and returns true if it is and false
+ * if it isn't.
+ *
+ * @returns bool returns true if cpu is IDLE and false if it isn't.
+ */
+bool SchedulingSystem::isCpuIdle()
+{
+  if (cpu == IDLE)
+  {
+    return true;
+  }
+  else
+  {
+    return false;
+  }
+}
+
+/** @brief get running process name
+ *
+ * This method check is cpu is Idle and returns a string "IDLE" if that is the case
+ * If the cpu is not idle this method will return the process name of the current cpu
+ * process id.
+ *
+ * @returns String returns "IDLE" if cpu is idle and the process name of the current cpu
+ * process id if it isn't.
+ */
+string SchedulingSystem::getRunningProcessName()
+{
+  if (isCpuIdle() == true)
+  {
+    return "IDLE";
+  }
+  else
+  {
+    return process[cpu].name;
+  }
+}
+
+/** @brief are all processes Done
+ *
+ * This method goes through each process in the process table and if a process
+ * is not done it returns false. If all processes checked are done return true
+ *
+ * @return Bool if a processis not done it returns false. If all processes
+ *  checked were done return true
+ */
+bool SchedulingSystem::allProcessesDone() const
+{
+  for (int i = 0; i < numProcesses; i++)
+  {
+    if (process[i].done == false)
+    {
+      return false;
+    }
+  }
+  return true;
+}
+
+/** @brief are all processes Done
+ *
+ * This method goes through each process in the process table and if a process
+ * is not done it returns false. If all processes checked are done return true
+ *
+ * @return Bool if a processis not done it returns false. If all processes
+ *  checked were done return true
+ */
+void SchedulingSystem::dispatchCpuIfIdle()
+{
+  if (isCpuIdle() == true)
+  {
+    cpu = policy->dispatch();
+    if (process[cpu].startTime == NOT_STARTED)
+    {
+      process[cpu].startTime = getSystemTime();
+    }
+  }
+}
+
+/** @brief check process finished
+ *
+ * This method does nothing if cpu is idle or if the process used time is less
+ *than its service time.
+ * Otherwise it will record its endtime as current systemTIme.
+ * Mark the process as done.
+ * And set the cpu to be idle again.
+ *
+ */
+void SchedulingSystem::checkProcessFinished()
+{
+  if (isCpuIdle() == true)
+  {
+    return;
+  }
+
+  if (process[cpu].usedTime < process[cpu].serviceTime)
+  {
+    return;
+  }
+
+  process[cpu].endTime = systemTime;
+  process[cpu].done = true;
+  cpu = IDLE;
 }
 
 /** @brief final results table
@@ -584,7 +713,7 @@ void SchedulingSystem::runSimulation(bool verbose)
   // to make scheduling decisions.  We keep running the simulation until
   // all processes in the process table are done
   string schedule = "";
-  /*
+  
   while (not allProcessesDone())
   {
     //cout << "runSimulation()> systemTime: " << systemTime << endl;
@@ -610,7 +739,7 @@ void SchedulingSystem::runSimulation(bool verbose)
     // is up to date for scheduling policies to use
     updateProcessStatistics();
   }
-  */
+  
 
   // Display scheduling simulation results if asked too
   if (verbose)

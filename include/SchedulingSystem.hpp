@@ -163,6 +163,10 @@ public:
   Process* getProcessTable() const;
   string finalResultsTable() const;
   string finalSchedule() const;
+  int getSystemTime();
+  int getNumProcesses();
+  bool isCpuIdle();
+  string getRunningProcessName();
 
   // methods for loading or generating page reference streams
   // for the simulation
@@ -177,6 +181,9 @@ public:
   void checkProcessPreemption();
   void updateProcessStatistics();
   void runSimulation(bool verbose = false);
+  bool allProcessesDone() const;
+  void dispatchCpuIfIdle();
+  void checkProcessFinished();
 };
 
 #endif // SCHEDULING_SYSTEM_HPP
